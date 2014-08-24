@@ -38,6 +38,7 @@ class Control extends Entity
 		{
 			img = new Image("graphics/" + speciesName + ".png");
 			img.scale = 0.25;
+			img.smooth = true;
 			addGraphic(img);
 		}
 
