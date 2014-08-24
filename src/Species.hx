@@ -92,6 +92,7 @@ class Species
 					Species.abundances[sp] = species.start;
 					lastExtinction = 15;
 					messages.push(species.article + " " + sp + (species.types.indexOf("plant") > -1 ? " grew." : " appeared."));
+					HXP.screen.shake(2, 0.4);
 					break;
 				}
 			}
@@ -144,9 +145,9 @@ class Species
 	public function grow()
 	{
 		var abundance:Float = abundances[name];
-		var desiredGrowth:Float = linearGrowth ? 100 : abundances[name];
-		var growth = desiredGrowth;
 		var limit = this.limit * (1 + 0.01 * richness);
+		var desiredGrowth:Float = linearGrowth ? 100 : Math.max(5, abundances[name]);
+		var growth = desiredGrowth;
 
 		for (cost in costs)
 		{

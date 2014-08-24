@@ -1,19 +1,19 @@
 <species_list>
 	<species type="money" name="money" time="120" limit="10000" growth="linear" start="100" goal="1">
-		<action name="payday" effect="+120" time="30"/>
+		<action name="payday" effect="+100" time="30"/>
 	</species>
 
-	<species type="plant" name="grass" time="60" limit="10000" start="40" goal="100" article="some">
+	<species type="plant" name="grass" value="0.5" time="60" limit="10000" start="40" goal="60" article="some">
 		<action name="fertilize" effect="+10%" cost="money:10" time="10"/>
 		<action name="cut" effect="-20%" time="30"/>
 	</species>
 
-	<species type="insect" name="ant" time="30" limit="10000" start="10" goal="25" article="an">
+	<species type="insect" name="ant" time="60" limit="5000" start="20" goal="40" article="an">
 		<cost type="plant" value="0.01"/>
 		<action name="pesticide" effect="-40%" cost="money:50" time="10"/>
 	</species>
 
-	<species type="spider" name="spider" value="4" time="90" limit="1000" start="2" goal="10">
+	<species type="spider" name="spider" value="4" time="90" limit="2000" start="5" goal="10">
 		<cost type="insect" value="5"/>
 		<action name="squish" effect="-15%" time="5"/>
 	</species>
@@ -29,7 +29,7 @@
 		<action name="trap" effect="-25%" cost="money:40" time="30"/>
 	</species>
 
-	<species type="insect" name="beetle" value="2" time="50" limit="5000" start="8" goal="20">
+	<species type="insect" name="beetle" value="2" time="50" limit="2500" start="8" goal="15">
 		<cost type="plant" value="0.1"/>
 	</species>
 
@@ -55,9 +55,10 @@
 		<action name="hunt" effect="-2" cost="money:80" time="60"/>
 	</species>
 
-	<species type="small herbivore" name="rabbit" value="2" time="45" limit="150" start="3" goal="21">
-		<cost type="plant" value="5"/>
-		<action name="hunt" effect="-10%" cost="money:50" time="60"/>
+	<species type="small herbivore" name="rabbit" value="2" time="45" limit="150" start="3" goal="13">
+		<cost type="plant" value="4"/>
+		<cost type="grass" value="2"/>
+		<action name="hunt" effect="-15%" cost="money:50" time="45"/>
 	</species>
 
 	<species type="reptile" name="snake" value="0.75" time="270" limit="50" start="2" goal="6">
