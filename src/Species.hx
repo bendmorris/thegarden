@@ -85,7 +85,7 @@ class Species
 			for (sp in Species.speciesOrder)
 			{
 				var species = Species.species[sp];
-				if (Species.abundances.exists(sp) && Species.abundances[sp] < species.goal)
+				if (Species.abundances.exists(sp) && Math.round(Species.abundances[sp]) < species.goal)
 					break;
 				else if (!Species.abundances.exists(sp))
 				{

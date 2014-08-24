@@ -1,6 +1,6 @@
 <species_list>
-	<species type="money" name="money" time="300" limit="10000" growth="linear" start="100" goal="1">
-		<action name="payday" effect="+100" time="30"/>
+	<species type="money" name="money" time="120" limit="10000" growth="linear" start="100" goal="1">
+		<action name="payday" effect="+120" time="30"/>
 	</species>
 
 	<species type="plant" name="grass" time="60" limit="10000" start="40" goal="100" article="some">
@@ -18,8 +18,8 @@
 		<action name="squish" effect="-15%" time="5"/>
 	</species>
 
-	<species type="plant" name="bush" value="10" time="120" limit="200" start="3" goal="5">
-		<cost type="grass" value="0.5"/>
+	<species type="plant" name="bush" value="12" time="120" limit="200" start="3" goal="6">
+		<cost type="grass" value="2"/>
 		<action name="fertilize" effect="+20%" cost="money:20" time="20"/>
 		<action name="prune" effect="-10%" time="30"/>
 	</species>
@@ -29,11 +29,11 @@
 		<action name="trap" effect="-25%" cost="money:40" time="30"/>
 	</species>
 
-	<species type="insect" name="beetle" value="2" time="50" limit="5000" start="8" goal="30">
+	<species type="insect" name="beetle" value="2" time="50" limit="5000" start="8" goal="20">
 		<cost type="plant" value="0.1"/>
 	</species>
 
-	<species type="small bird" name="sparrow" time="180" limit="100" start="2" goal="8">
+	<species type="small bird" name="sparrow" time="180" limit="100" start="1" goal="8">
 		<cost type="plant|insect|spider" value="0.5"/>
 		<action name="feeder" effect="+10" cost="money:20" time="60"/>
 	</species>
@@ -41,11 +41,11 @@
 	<species type="small carnivore" name="cat" value="3" time="210" limit="50" start="1" goal="5">
 		<cost type="small herbivore|small bird" value="5"/>
 		<cost type="money" value="1"/>
-		<action name="feed" effect="+2" cost="money:30" time="60"/>
+		<action name="feed" effect="+2" cost="money:30" time="45"/>
 	</species>
 
-	<species type="plant" name="tree" value="50" time="240" limit="50" start="2" goal="4">
-		<cost type="grass" value="2"/>
+	<species type="plant" name="tree" value="60" time="180" limit="100" start="3" goal="8">
+		<cost type="grass" value="5"/>
 		<action name="fertilize" effect="+10%" cost="money:30" time="30"/>
 		<action name="prune" effect="-1" time="30"/>
 	</species>
@@ -55,8 +55,8 @@
 		<action name="hunt" effect="-2" cost="money:80" time="60"/>
 	</species>
 
-	<species type="small herbivore" name="rabbit" value="2" time="60" limit="100" start="3" goal="21">
-		<cost type="plant" value="2"/>
+	<species type="small herbivore" name="rabbit" value="2" time="45" limit="150" start="3" goal="21">
+		<cost type="plant" value="5"/>
 		<action name="hunt" effect="-10%" cost="money:50" time="60"/>
 	</species>
 
@@ -69,7 +69,7 @@
 		<cost type="small bird|small herbivore|reptile" value="2"/>
 	</species>
 
-	<species type="plant" name="corn" value="100" time="300" limit="10" start="2" goal="5" article="some">
+	<species type="plant" name="corn" value="90" time="300" limit="25" start="5" goal="10" article="some">
 		<cost type="grass" value="1"/>
 		<action name="fertilize" effect="+10%" cost="money:40" time="120"/>
 	</species>
