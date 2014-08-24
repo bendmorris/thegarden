@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<meta title="garden" package="com.monsterface.garden" version="1.0.0" company="" />
+
+	<app file="garden" main="Main" path="bin" />
+
+	<window fps="30" background="0xFFFFFF" />
+	<window width="640" height="480" resizable="true" unless="mobile" />
+	<window fullscreen="true" if="mobile" />
+	<window orientation="landscape" vsync="true" />
+	<window antialiasing="4" />
+
+	<source path="src" />
+
+	<haxelib name="haxepop" />
+
+	<assets path="assets/data" rename="data" include="*.xml" type="text" embed="true" />
+	<assets path="assets/font" rename="font" include="*.png" type="image" embed="true"/>
+	<assets path="assets/font" rename="font" include="*.fnt" type="text" embed="true"/>
+    <assets path="assets/graphics" rename="graphics" include="*.png" type="image" embed="true"/>
+</project>
