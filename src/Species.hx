@@ -10,10 +10,16 @@ class Species
 	public static var oldAbundances:Map<String, Float> = new Map();
 	public static var abundances:Map<String, Float> = new Map();
 	public static var growthRates:Map<String, Float> = new Map();
+	public static var appearOrder:Array<String> = new Array();
 	public static var speciesOrder:Array<String> = new Array();
 	public static var actionTimers:Map<String, Float> = new Map();
 	public static var lastExtinction:Float = 0;
 	public static var messages:Array<String> = new Array();
+
+	public static var groupOrder = [
+		"money", "plant", "tree", "insect", "spider", "reptile", "small herbivore",
+		"large herbivore", "bird", "carnivore"
+	];
 
 	public static var richness(get, never):Int;
 	static function get_richness()
@@ -72,7 +78,19 @@ class Species
 			}
 
 			species[thisSpecies.name] = thisSpecies;
-			speciesOrder.push(thisSpecies.name);
+			appearOrder.push(thisSpecies.name);
+		}
+
+		for (group in groupOrder)
+		{
+			for (sp in speciesTypes[group])
+			{
+				if (speciesOrder.indexOf(sp) == -1) speciesOrder.push(sp);
+			}
+		}
+		for (sp in appearOrder)
+		{
+			if (speciesOrder.indexOf(sp) == -1) speciesOrder.push(sp);
 		}
 	}
 
@@ -82,7 +100,7 @@ class Species
 
 		if (Species.lastExtinction <= 0)
 		{
-			for (sp in Species.speciesOrder)
+			for (sp in Species.appearOrder)
 			{
 				var species = Species.species[sp];
 				if (Species.abundances.exists(sp) && Math.round(Species.abundances[sp]) < species.goal)

@@ -19,12 +19,14 @@ class Control extends Entity
 	public var actionButtons:Array<BitmapText>;
 	public var actionAlphas:Array<Float>;
 	public var meter:Image;
+	public var flash:Int = -1;
+	public var imgAlpha:Float = 1;
 
 	public var alpha(default, set):Float = 0;
 	function set_alpha(v:Float)
 	{
 		for (n in 0 ... actionButtons.length) actionButtons[n].alpha = actionAlphas[n] * v;
-		if (img != null) img.alpha = v;
+		if (img != null) img.alpha = imgAlpha * v;
 		return meter.alpha = label.alpha = countLabel.alpha = alpha = v;
 	}
 
@@ -99,6 +101,23 @@ class Control extends Entity
 				b = Std.int(val/4);
 			}
 			c = (r << 16) | (g << 8) | b;
+
+			if (Math.round(Species.abundances[speciesName]) < Species.species[speciesName].goal)
+			{
+				imgAlpha += HXP.elapsed * flash;
+				if (imgAlpha >= 1)
+				{
+					imgAlpha = 1;
+					flash = -1;
+				}
+				else if (imgAlpha <= 0)
+				{
+					imgAlpha = 0;
+					flash = 1;
+				}
+			}
+			else imgAlpha = 1;
+			img.alpha = alpha * imgAlpha;
 		}
 
 		label.color = countLabel.color = meter.color = c;
