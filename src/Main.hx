@@ -14,6 +14,7 @@ class Main extends Engine
 	{
 #if debug
 		HXP.console.enable();
+		HXP.rate = 4;
 #end
 		HXP.scene = new MainScene();
 	}

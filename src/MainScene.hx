@@ -63,8 +63,11 @@ class MainScene extends Scene
 					control.visible = true;
 					if (control.alpha < 1) control.alpha = Math.min(1, control.alpha + HXP.elapsed);
 					var targetY = 72 + n*(control.label.textHeight-2);
+					var move = HXP.elapsed * (36 + Math.abs(control.y - targetY)) * (control.y > targetY ? -1 : 1);
+					if (Math.abs(move) > Math.abs(targetY - control.y))
+						move = targetY - control.y;
 					if (Math.abs(control.y - targetY) < 1) control.y = targetY;
-					else control.y +=  HXP.elapsed * (36 + Math.abs(control.y - targetY)) * (control.y > targetY ? -1 : 1);
+					else control.y += move;
 					n += 1;
 				}
 				else
