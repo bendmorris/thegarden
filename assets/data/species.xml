@@ -20,7 +20,7 @@
 
 	<species type="plant" name="bush" value="12" time="120" limit="200" start="3" goal="6">
 		<cost type="grass" value="2"/>
-		<action name="fertilize" effect="+20%" cost="money:20" time="20"/>
+		<action name="fertilize" effect="+20%" cost="money:20" time="15"/>
 		<action name="prune" effect="-10%" time="30"/>
 	</species>
 
@@ -44,9 +44,9 @@
 		<action name="feed" effect="+2" cost="money:30" time="45"/>
 	</species>
 
-	<species type="plant" name="tree" value="60" time="180" limit="100" start="3" goal="8">
+	<species type="plant" name="tree" value="60" time="150" limit="150" start="6" goal="12">
 		<cost type="grass" value="5"/>
-		<action name="fertilize" effect="+10%" cost="money:30" time="30"/>
+		<action name="fertilize" effect="+15%" cost="money:30" time="20"/>
 		<action name="prune" effect="-1" time="30"/>
 	</species>
 
@@ -55,9 +55,8 @@
 		<action name="hunt" effect="-2" cost="money:80" time="60"/>
 	</species>
 
-	<species type="small herbivore" name="rabbit" value="2" time="45" limit="150" start="3" goal="13">
-		<cost type="plant" value="4"/>
-		<cost type="grass" value="2"/>
+	<species type="small herbivore" name="rabbit" value="2" time="60" limit="150" start="3" goal="8">
+		<cost type="grass|bush" value="10"/>
 		<action name="hunt" effect="-15%" cost="money:50" time="45"/>
 	</species>
 
@@ -80,7 +79,7 @@
 	</species>
 
 	<species type="large herbivore" name="deer" value="10" time="180" limit="200" start="2" goal="5">
-		<cost type="plant" value="5"/>
+		<cost type="grass|bush" value="5"/>
 		<action name="hunt" effect="-20%" cost="money:75" time="60"/>
 	</species>
 
