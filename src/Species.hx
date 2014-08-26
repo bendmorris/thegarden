@@ -10,6 +10,7 @@ class Species
 	public static var oldAbundances:Map<String, Float> = new Map();
 	public static var abundances:Map<String, Float> = new Map();
 	public static var growthRates:Map<String, Float> = new Map();
+	public static var diets:Map<String, Map<String, Float>> = new Map();
 	public static var appearOrder:Array<String> = new Array();
 	public static var speciesOrder:Array<String> = new Array();
 	public static var actionTimers:Map<String, Float> = new Map();
@@ -143,12 +144,19 @@ class Species
 	public var description(get, never):String;
 	function get_description()
 	{
-		var eatString = [for (cost in costs) cost.type].join(", ");
+		var eatString = [for (cost in costs) cost.type].join(" & ");
 		var desc = name;
 		if (name != "money")
 		{
-			desc += " [" + types.join(' ') + "]";
-			if (eatString.length > 0) desc += "\nEATS: " + eatString;
+			if (types.join(' ') != name) desc += " [" + types.join(' ') + "]";
+			if (eatString.length > 0)
+			{
+				desc += "\n  eats: " + eatString;
+				desc += "\n  eating: ";
+				var eating = [for (k in diets[name].keys()) k];
+				eating.sort(function (a, b) return diets[name][a] > diets[name][b] ? -1 : 1);
+				desc += [for (k in eating) Std.int(Math.round(diets[name][k] * 100)) + "% " + k].join(', ');
+			}
 		}
 		return desc;
 	}
@@ -166,6 +174,14 @@ class Species
 		var limit = this.limit * (1 + 0.01 * richness);
 		var desiredGrowth:Float = linearGrowth ? 100 : Math.max(5, abundances[name]);
 		var growth = desiredGrowth;
+		if (diets.exists(name))
+		{
+			for (key in diets[name].keys()) diets[name].remove(key);
+		}
+		else
+		{
+			diets[name] = new Map();
+		}
 
 		for (cost in costs)
 		{
@@ -192,7 +208,15 @@ class Species
 			for (sp in typedSpecies)
 			{
 				abundances[sp] -= needed * species[sp].value * abundances[sp] / totalAmt * HXP.elapsed / time;
+				if (!diets[name].exists(sp)) diets[name][sp] = 0;
+				diets[name][sp] += species[sp].value * abundances[sp];
 			}
+		}
+
+		var totalEnergy = Lambda.fold([for (k in diets[name].keys()) k], function(a, b) return diets[name][a] + b, 0);
+		for (sp in diets[name].keys())
+		{
+			diets[name][sp] /= totalEnergy;
 		}
 
 		if (growth > 0) growth *= (1 - (abundance / limit));

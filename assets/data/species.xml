@@ -35,7 +35,6 @@
 
 	<species type="small carnivore" name="cat" value="3" time="210" limit="50" start="1" goal="5">
 		<cost type="small herbivore|small bird" value="5"/>
-		<cost type="money" value="1"/>
 		<action name="feed" effect="+2" cost="money:30" time="45"/>
 	</species>
 
@@ -89,8 +88,9 @@
 		<action name="hunt" effect="-20%" cost="money:100" time="30"/>
 	</species>
 
-	<species type="large herbivore" name="cow" value="8" time="180" limit="100" start="8" goal="12">
+	<species type="large herbivore" name="cow" value="8" time="150" limit="100" start="8" goal="12">
 		<cost type="grass" value="10"/>
+		<action name="feed" effect="+10%" cost="money:50" time="30"/>
 		<action name="slaughter" effect="-1" cost="money:50" time="10"/>
 	</species>
 

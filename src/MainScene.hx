@@ -103,7 +103,7 @@ class MainScene extends Scene
 					overButton = true;
 					if (control.speciesName != "money")
 					{
-						var actionText = action.name + ": " + control.speciesName + " " + action.effect;
+						var actionText = action.name + ":\n  " + control.speciesName + " " + action.effect;
 						if (action.cost != null)
 						{
 							if (action.cost.type == "money") actionText += " ($" + action.cost.value + ")";
