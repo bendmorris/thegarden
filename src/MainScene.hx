@@ -21,8 +21,8 @@ class MainScene extends Scene
 		Species.abundances = [
 			"money" => 100,
 		];
-		Species.actionTimers = ["payday" => 30];
-		Species.lastExtinction = 2.5;
+		Species.actionTimers = ["payday" => 30, "cut" => 30, "pesticide" => 60];
+		Species.lastExtinction = 4;
 	}
 
 	public override function begin()
