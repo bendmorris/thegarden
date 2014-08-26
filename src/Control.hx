@@ -9,7 +9,7 @@ import haxepop.input.Mouse;
 
 class Control extends Entity
 {
-	public static inline var FONT:String="font/bebas_neue.fnt";
+	public static inline var FONT:String="font/coolvetica.fnt";
 	public static var FONT_OPTIONS={font:FONT, size:12, color:0x000000};
 
 	public var speciesName:String;
