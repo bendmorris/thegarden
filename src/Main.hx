@@ -22,7 +22,7 @@ class Main extends Engine
 	public static function main()
 	{
 		Species.parseSpecies();
-		HXP.autoPause = false;
+		//HXP.autoPause = false;
 		new Main();
 	}
 
