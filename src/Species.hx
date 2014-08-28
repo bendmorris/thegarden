@@ -207,7 +207,7 @@ class Species
 			}
 			for (sp in typedSpecies)
 			{
-				abundances[sp] -= needed * species[sp].value * abundances[sp] / totalAmt * HXP.elapsed / time / 1.25;
+				abundances[sp] -= needed * species[sp].value * abundances[sp] / totalAmt * HXP.elapsed / time / (1 + richness / 40);
 				if (!diets[name].exists(sp)) diets[name][sp] = 0;
 				diets[name][sp] += species[sp].value * abundances[sp] * cost.value;
 			}
