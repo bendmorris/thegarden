@@ -3,4 +3,5 @@ typedef Action = {
 	effect: String,
 	cost: Cost,
 	time: Float,
+	price: Float,
 }

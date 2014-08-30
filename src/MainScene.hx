@@ -9,6 +9,7 @@ import haxepop.input.Mouse;
 
 class MainScene extends Scene
 {
+	public var paused:Bool = false;
 	public var controls:Map<String, Control>;
 	public var mouseOverLabel:BitmapText;
 	public var messageLabel:BitmapText;
@@ -19,7 +20,7 @@ class MainScene extends Scene
 		super();
 		controls = new Map();
 		Species.abundances = [
-			"money" => 100,
+			"money" => 25,
 		];
 		Species.actionTimers = ["payday" => 30, "cut" => 30, "pesticide" => 60];
 		Species.lastExtinction = 4;
@@ -36,7 +37,7 @@ class MainScene extends Scene
 			add(controls[sp]);
 		}
 
-		mouseOverLabel = new BitmapText(" ", 48, 8, 0, 0, Control.FONT_OPTIONS);
+		mouseOverLabel = new BitmapText(" ", 48, 4, 0, 0, Control.FONT_OPTIONS);
 		mouseOverLabel.alpha = 0;
 		mouseOverLabel.color = 0x808080;
 		addGraphic(mouseOverLabel);
@@ -49,7 +50,12 @@ class MainScene extends Scene
 
 	override public function update()
 	{
-		Species.update();
+		Species.update(paused ? 0 : 1);
+		if (paused && Mouse.mousePressed)
+		{
+			paused = false;
+			return super.update();
+		}
 
 		var n = 0;
 		for (sp in Species.speciesOrder)
@@ -109,6 +115,8 @@ class MainScene extends Scene
 							if (action.cost.type == "money") actionText += " ($" + action.cost.value + ")";
 							else actionText += " (" + action.cost.value + " " + action.cost.type + ")";
 						}
+						if (action.price > 0) actionText += " (+$" + action.price + " each)";
+
 						mouseOverLabel.text = actionText;
 					}
 
@@ -128,7 +136,12 @@ class MainScene extends Scene
 			mouseOverLabel.alpha = Math.max(0, mouseOverLabel.alpha - HXP.elapsed);
 		}
 
-		if (Species.messages.length > 0)
+		if (paused)
+		{
+			messageLabel.text = "PAUSED - click to resume";
+			messageFade = 1;
+		}
+		else if (Species.messages.length > 0)
 		{
 			messageLabel.text = Species.messages.pop();
 			while (Species.messages.length > 0) Species.messages.pop();

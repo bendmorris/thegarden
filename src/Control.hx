@@ -16,6 +16,8 @@ class Control extends Entity
 	public var img:Image;
 	public var label:BitmapText;
 	public var countLabel:BitmapText;
+	public var growthLabel:BitmapText;
+	public var shrinkLabel:BitmapText;
 	public var actionButtons:Array<BitmapText>;
 	public var actionAlphas:Array<Float>;
 	public var meter:Image;
@@ -27,7 +29,7 @@ class Control extends Entity
 	{
 		for (n in 0 ... actionButtons.length) actionButtons[n].alpha = actionAlphas[n] * v;
 		if (img != null) img.alpha = imgAlpha * v;
-		return meter.alpha = label.alpha = countLabel.alpha = alpha = v;
+		return meter.alpha = label.alpha = countLabel.alpha = growthLabel.alpha = shrinkLabel.alpha = alpha = v;
 	}
 
 	public function new(speciesName:String)
@@ -45,14 +47,19 @@ class Control extends Entity
 		}
 
 		label = new BitmapText(speciesName, 48, -6, 0, 0, FONT_OPTIONS);
-		countLabel = new BitmapText("0", 200, -6, 0, 0, FONT_OPTIONS);
+		countLabel = new BitmapText("0", 180, -6, 0, 0, FONT_OPTIONS);
 		label.smooth = countLabel.smooth = true;
 		addGraphic(label);
 		addGraphic(countLabel);
 
+		growthLabel = new BitmapText(" ", 250, -6, 0, 0, FONT_OPTIONS);
+		shrinkLabel = new BitmapText(" ", 320, -6, 0, 0, FONT_OPTIONS);
+		addGraphic(growthLabel);
+		addGraphic(shrinkLabel);
+
 		//meter
 		meter = Image.createRect(48, Std.int(label.textHeight/2));
-		meter.x = 208;
+		meter.x = 188;
 		meter.y = meter.height/2;
 		addGraphic(meter);
 
@@ -62,8 +69,8 @@ class Control extends Entity
 		{
 			var actionLabel = new BitmapText(action.name, 0, -6, 0, 0, FONT_OPTIONS);
 			actionLabel.computeTextSize();
-			actionLabel.x = 260 + Lambda.fold(actionButtons, function(x, y) { return x.textWidth + y + 32; }, 0);
-			actionLabel.color = (action.effect.indexOf("-") > -1 ? 0xFF0000 : 0x008020);
+			actionLabel.x = 400 + Lambda.fold(actionButtons, function(x, y) { return x.textWidth + y + 32; }, 0);
+			actionLabel.color = action.effect.substring(0, 1) == ':' ? 0x000000 : action.effect.indexOf("-") > -1 ? 0xFF0000 : 0x008020;
 			actionLabel.alpha = 0;
 			addGraphic(actionLabel);
 			actionButtons.push(actionLabel);
@@ -80,16 +87,27 @@ class Control extends Entity
 
 	override public function update()
 	{
+		var sp = Species.species[speciesName];
+
 		countLabel.text = Species.abundances.exists(speciesName)
 			? ((speciesName == "money" ? "$" : "") + Std.int(Math.round(Species.abundances[speciesName])))
 			: "0";
-		countLabel.x = 200 - countLabel.textWidth;
+		countLabel.x = 180 - countLabel.textWidth;
+
+		var g = Species.growthRates[speciesName];
+		var s = Species.shrinkRates[speciesName];
+		growthLabel.text = (g > 0 ? "+" : "") + Species.formatRate(g);
+		shrinkLabel.text = "-" + Species.formatRate(s);
+		growthLabel.color = g > s ? 0x008020 : 0x808080;
+		shrinkLabel.color = s > g ? 0xFF0000 : 0x808080;
+
 		var c:Int = 0;
 		if (speciesName == "money") c = 0x202020;
 		else if (Species.abundances.exists(speciesName))
 		{
 			var growth = Species.growthRates.exists(speciesName) ? Species.growthRates[speciesName] : 0;
-			var val:Int = Std.int(Math.clamp(Math.abs(growth) * 255, 0, 127)) + 128;
+			if (Species.shrinkRates.exists(speciesName)) growth -= Species.shrinkRates[speciesName];
+			var val:Int = Std.int(Math.clamp(Math.abs(growth * 100 / sp.limit) * 255, 0, 127)) + 128;
 			var r:Int=0, g:Int=0, b:Int=0;
 			if (growth < 0)
 			{
@@ -102,7 +120,7 @@ class Control extends Entity
 			}
 			c = (r << 16) | (g << 8) | b;
 
-			if (Math.round(Species.abundances[speciesName]) < Species.species[speciesName].goal)
+			if (Math.round(Species.abundances[speciesName]) < sp.goal)
 			{
 				imgAlpha += HXP.elapsed * flash;
 				if (imgAlpha >= 1)
@@ -126,16 +144,18 @@ class Control extends Entity
 		{
 			meter.scaleX = Math.clamp(
 				(Species.abundances.exists(speciesName) ? Species.abundances[speciesName] : 0) /
-				Species.species[speciesName].limit + (0.01 * Species.richness),
+				sp.limit + (0.01 * Species.richness),
 				0, 1);
 		} else meter.visible = false;
 
 		var n = 0;
 		for (action in Species.species[speciesName].actions)
 		{
-			var visible = !Species.actionTimers.exists(action.name);
+			var visible = !(Species.actionTimers.exists(action.name) || cast(HXP.scene, MainScene).paused);
 			if (visible) actionAlphas[n] = Math.min(1, actionAlphas[n] + HXP.elapsed);
 			else actionAlphas[n] = Math.max(0, actionAlphas[n] - HXP.elapsed);
+			if (action.cost != null && Species.abundances[action.cost.type] < action.cost.value)
+				actionAlphas[n] = Math.min(actionAlphas[n], 0.25);
 			this.alpha *= 1;
 			n++;
 		}

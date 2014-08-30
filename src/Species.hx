@@ -9,13 +9,14 @@ class Species
 	public static var speciesTypes:Map<String, Array<String>> = new Map();
 	public static var oldAbundances:Map<String, Float> = new Map();
 	public static var abundances:Map<String, Float> = new Map();
-	public static var growthRates:Map<String, Float> = new Map();
-	public static var diets:Map<String, Map<String, Float>> = new Map();
 	public static var appearOrder:Array<String> = new Array();
 	public static var speciesOrder:Array<String> = new Array();
 	public static var actionTimers:Map<String, Float> = new Map();
 	public static var lastExtinction:Float = 0;
 	public static var messages:Array<String> = new Array();
+	public static var growthRates:Map<String, Float> = new Map();
+	public static var shrinkRates:Map<String, Float> = new Map();
+	public static var diets:Map<String, Map<String, Float>> = new Map();
 
 	public static var groupOrder = [
 		"money", "plant", "tree", "insect", "spider", "reptile", "small herbivore",
@@ -70,15 +71,19 @@ class Species
 					var actionCostParts = action.att.cost.split(':');
 					actionCost = {type: actionCostParts[0], value: Std.parseFloat(actionCostParts[1])};
 				}
+				var price = action.has.price ? Std.parseFloat(action.att.price) : 0;
 				thisSpecies.actions.push({name:
 					action.att.name,
 					effect: action.att.effect,
 					cost: actionCost,
 					time: Std.parseFloat(action.att.time),
+					price: price,
 				});
 			}
 
 			species[thisSpecies.name] = thisSpecies;
+			growthRates[thisSpecies.name] = 0;
+			shrinkRates[thisSpecies.name] = 0;
 			appearOrder.push(thisSpecies.name);
 		}
 
@@ -95,8 +100,9 @@ class Species
 		}
 	}
 
-	public static function update()
+	public static function update(rate:Float=1)
 	{
+		if (rate == 0) return;
 		lastExtinction = Math.max(0, lastExtinction - HXP.elapsed);
 
 		if (Species.lastExtinction <= 0)
@@ -117,15 +123,16 @@ class Species
 			}
 		}
 
+		for (sp in growthRates.keys()) growthRates[sp] = 0;
+		for (sp in shrinkRates.keys()) shrinkRates[sp] = 0;
 		for (speciesName in abundances.keys()) oldAbundances[speciesName] = abundances[speciesName];
 
 		for (speciesName in abundances.keys()) species[speciesName].grow();
 
 		for (speciesName in abundances.keys())
 		{
-			growthRates[speciesName] =
-				20 * (abundances[speciesName] - oldAbundances[speciesName]) / HXP.elapsed / oldAbundances[speciesName];
-
+			abundances[speciesName] += growthRates[speciesName] * HXP.elapsed;
+			abundances[speciesName] -= shrinkRates[speciesName] * HXP.elapsed;
 			if (abundances[speciesName] < 0.5 && speciesName != "money")
 			{
 				abundances.remove(speciesName);
@@ -141,6 +148,19 @@ class Species
 		}
 	}
 
+	public static function formatRate(rate:Float):String
+	{
+		var rateString:String;
+		if (rate < 0.1)
+		{
+			return (Std.int(rate * 60 * 10) / 10) + "/m";
+		}
+		else
+		{
+			return (Std.int(rate * 10) / 10) + "/s";
+		}
+	}
+
 	public var description(get, never):String;
 	function get_description()
 	{
@@ -148,14 +168,14 @@ class Species
 		var desc = name;
 		if (name != "money")
 		{
-			if (types.join(' ') != name) desc += " [" + types.join(' ') + "]";
+			if (types.join(' ') != name) desc += " [" + types.join(' ') + "] ";
 			if (eatString.length > 0)
 			{
 				desc += "\n  eats: " + eatString;
 				desc += "\n  eating: ";
 				var eating = [for (k in diets[name].keys()) k];
 				eating.sort(function (a, b) return diets[name][a] > diets[name][b] ? -1 : 1);
-				desc += [for (k in eating) Std.int(Math.round(diets[name][k] * 100)) + "% " + k].join(', ');
+				desc += [for (n in 0 ... eating.length) if (n < 4) eating[n] + " " + formatRate(diets[name][eating[n]])].join(', ');
 			}
 		}
 		return desc;
@@ -190,7 +210,7 @@ class Species
 				for (x in Lambda.fold(options, function(a:String, b:Array<String>) { return b.concat(speciesTypes[a]); }, []))
 				if (abundances.exists(x)) x];
 
-			var needed = desiredGrowth * cost.value;
+			var needed = desiredGrowth * cost.value / time * 10;
 			var totalAmt:Float = 0;
 			for (sp in typedSpecies)
 			{
@@ -207,25 +227,29 @@ class Species
 			}
 			for (sp in typedSpecies)
 			{
-				abundances[sp] -= needed * species[sp].value * abundances[sp] / totalAmt * HXP.elapsed / time / (1 + richness / 40);
+				var eat = needed * species[sp].value * abundances[sp] / totalAmt / time / (1 + richness / 40);
+				if (!shrinkRates.exists(sp)) shrinkRates[sp] = 0;
 				if (!diets[name].exists(sp)) diets[name][sp] = 0;
-				diets[name][sp] += species[sp].value * abundances[sp] * cost.value;
+				shrinkRates[sp] += eat;
+				diets[name][sp] += eat;
 			}
 		}
 
-		var totalEnergy = Lambda.fold([for (k in diets[name].keys()) k], function(a, b) return diets[name][a] + b, 0);
-		for (sp in diets[name].keys())
-		{
-			diets[name][sp] /= totalEnergy;
-		}
-
-		if (growth > 0) growth *= (1 - (abundance / limit));
-
-		abundances[name] += growth * HXP.elapsed / time;
+		if (growth > 0 && !linearGrowth) growth *= (1 - (abundance / limit));
+		growthRates[name] = growth / time;
 	}
 
 	public function performAction(action:Action)
 	{
+		switch (action.effect)
+		{
+			case ':pause:':
+			{
+				cast(HXP.scene, MainScene).paused = true;
+				return;
+			}
+			default:
+		}
 		var effect = action.effect;
 		var percent = false;
 		if (effect.indexOf("%") > -1)
@@ -240,6 +264,7 @@ class Species
 			if (Math.abs(amt) < 1) amt = amt < 0 ? -1 : 1;
 		}
 		abundances[name] += amt;
+		if (amt < 0 && action.price > 0) abundances['money'] -= amt * action.price;
 	}
 
 	public var name:String;

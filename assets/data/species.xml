@@ -1,14 +1,15 @@
 <species_list>
-	<species type="money" name="money" time="120" limit="10000" growth="linear" start="100" goal="1">
-		<action name="payday" effect="+100" time="30"/>
+	<species type="money" name="money" time="100" limit="10000" growth="linear" start="25" goal="1">
+		<action name="pause" effect=":pause:" cost="money:10" time="5"/>
+		<action name="payday" effect="+100" time="60"/>
 	</species>
 
-	<species type="plant" name="grass" time="30" limit="8000" start="45" goal="60" article="some">
-		<action name="fertilize" effect="+10%" cost="money:10" time="10"/>
-		<action name="cut" effect="-20%" time="20"/>
+	<species type="plant" name="grass" time="30" limit="8000" start="50" goal="60" article="some">
+		<action name="fertilize" effect="+10%" cost="money:20" time="10"/>
+		<action name="cut" effect="-20%" time="5"/>
 	</species>
 
-	<species type="insect" name="ant" time="60" limit="5000" start="20" goal="40" article="an">
+	<species type="insect" name="ant" time="60" limit="5000" start="25" goal="40" article="an">
 		<cost type="plant" value="0.2"/>
 		<action name="pesticide" effect="-40%" cost="money:50" time="10"/>
 	</species>
@@ -20,83 +21,85 @@
 
 	<species type="plant" name="bush" value="10" time="60" limit="500" start="6" goal="12">
 		<cost type="grass" value="4"/>
-		<action name="fertilize" effect="+20%" cost="money:20" time="15"/>
-		<action name="prune" effect="-10%" time="20"/>
+		<action name="fertilize" effect="+20%" cost="money:25" time="12"/>
+		<action name="prune" effect="-10%" time="10"/>
 	</species>
 
 	<species type="small herbivore" name="mouse" time="100" limit="100" start="4" goal="10">
-		<cost type="plant" value="1"/>
+		<cost type="plant" value="5"/>
 		<action name="trap" effect="-25%" cost="money:40" time="30"/>
 	</species>
 
 	<species type="insect" name="beetle" value="2" time="50" limit="2500" start="8" goal="15">
 		<cost type="plant|tree" value="0.25"/>
+		<action name="squish" effect="-15%" time="5"/>
 	</species>
 
 	<species type="small carnivore" name="cat" value="3" time="210" limit="50" start="1" goal="5">
-		<cost type="small herbivore|small bird" value="5"/>
+		<cost type="small herbivore|small bird" value="7"/>
 		<action name="feed" effect="+2" cost="money:30" time="45"/>
 	</species>
 
 	<species type="tree" name="tree" value="25" time="150" limit="200" start="10" goal="20">
 		<cost type="grass" value="8"/>
-		<action name="fertilize" effect="+15%" cost="money:30" time="20"/>
-		<action name="prune" effect="-1" time="20"/>
+		<action name="fertilize" effect="+15%" cost="money:30" time="15"/>
+		<action name="harvest" effect="-20%" price="15" time="20"/>
 	</species>
 
 	<species type="large carnivore" name="coyote" value="4" time="360" limit="50" start="2" goal="4">
-		<cost type="herbivore|small carnivore" value="7"/>
-		<action name="hunt" effect="-20%" cost="money:80" time="30"/>
+		<cost type="herbivore|small carnivore" value="9"/>
+		<action name="hunt" effect="-20%" cost="money:80" time="20"/>
 	</species>
 
 	<species type="small herbivore" name="rabbit" value="2" time="60" limit="150" start="3" goal="8">
 		<cost type="grass" value="10"/>
 		<cost type="bush" value="1"/>
-		<action name="hunt" effect="-15%" cost="money:50" time="45"/>
+		<action name="hunt" effect="-15%" cost="money:50" time="20"/>
 	</species>
 
 	<species type="small bird" name="sparrow" time="180" limit="100" start="1" goal="8">
 		<cost type="insect|spider" value="5"/>
 		<cost type="tree" value="1"/>
-		<action name="feeder" effect="+10" cost="money:20" time="60"/>
+		<action name="feeder" effect="+10" cost="money:20" time="30"/>
 	</species>
 
 	<species type="reptile" name="snake" value="0.75" time="210" limit="50" start="2" goal="6">
-		<cost type="small herbivore|small bird" value="1"/>
-		<action name="kill" effect="-1" cost="money:5" time="60"/>
+		<cost type="small herbivore|small bird" value="10"/>
+		<action name="kill" effect="-1" cost="money:5" time="20"/>
 	</species>
 
 	<species type="large bird" name="hawk" time="300" limit="50" start="2" goal="4">
-		<cost type="small bird|small herbivore|reptile" value="2"/>
+		<cost type="small bird|small herbivore|reptile" value="5"/>
 	</species>
 
 	<species type="plant" name="corn" value="20" time="90" limit="200" start="30" goal="50" article="some">
 		<cost type="grass" value="6"/>
-		<action name="fertilize" effect="+20%" cost="money:40" time="20"/>
+		<action name="fertilize" effect="+20%" cost="money:50" time="20"/>
+		<action name="harvest" effect="-20%" price="10" time="20"/>
 	</species>
 
 	<species type="reptile" name="lizard" time="180" limit="50" start="3" goal="10">
-		<cost type="insect|spider" value="10"/>
+		<cost type="insect|spider" value="15"/>
 	</species>
 
 	<species type="large herbivore" name="deer" value="5" time="150" limit="200" start="12" goal="18">
-		<cost type="plant" value="5"/>
-		<action name="hunt" effect="-20%" cost="money:75" time="30"/>
+		<cost type="plant" value="15"/>
+		<action name="hunt" effect="-20%" cost="money:75" time="25"/>
 	</species>
 
 	<species type="large carnivore" name="wolf" value="5" time="180" limit="50" start="2" goal="4">
-		<cost type="herbivore|small carnivore" value="8"/>
-		<action name="hunt" effect="-20%" cost="money:100" time="30"/>
+		<cost type="herbivore|small carnivore" value="10"/>
+		<action name="hunt" effect="-20%" cost="money:100" time="25"/>
 	</species>
 
-	<species type="large herbivore" name="cow" value="8" time="150" limit="100" start="8" goal="12">
-		<cost type="grass" value="10"/>
+	<species type="large herbivore" name="cow" value="10" time="150" limit="100" start="8" goal="15">
+		<cost type="grass" value="20"/>
 		<action name="feed" effect="+10%" cost="money:50" time="30"/>
-		<action name="slaughter" effect="-1" cost="money:50" time="10"/>
+		<action name="slaughter" effect="-1" cost="money:10" price="50" time="10"/>
 	</species>
 
 	<species type="top carnivore" name="bear" value="10" time="300" limit="20" start="2" goal="5">
-		<cost type="herbivore|carnivore" value="50"/>
+		<cost type="herbivore|small carnivore|large carnivore" value="50"/>
 		<action name="hunt" effect="-1" cost="money:250" time="30"/>
 	</species>
 
