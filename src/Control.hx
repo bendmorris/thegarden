@@ -80,8 +80,10 @@ class Control extends Entity
 		collidable = true;
 		type = "control";
 		width = actionButtons.length == 0
-			? 260
-			: Std.int(actionButtons[actionButtons.length - 1].x + actionButtons[actionButtons.length - 1].textWidth);
+			? 550
+			: Std.int(Math.max(
+				550,
+				Std.int(actionButtons[actionButtons.length - 1].x + actionButtons[actionButtons.length - 1].textWidth)));
 		height = label.textHeight;
 	}
 
@@ -135,7 +137,7 @@ class Control extends Entity
 				}
 			}
 			else imgAlpha = 1;
-			img.alpha = alpha * imgAlpha;
+			if (img != null) img.alpha = alpha * imgAlpha;
 		}
 
 		label.color = countLabel.color = meter.color = c;

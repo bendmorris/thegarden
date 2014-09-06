@@ -20,7 +20,7 @@ class MainScene extends Scene
 		super();
 		controls = new Map();
 		Species.abundances = [
-			"money" => 25,
+			"money" => #if debug 10000 #else 25 #end,
 		];
 		Species.actionTimers = ["payday" => 30, "cut" => 30, "pesticide" => 60];
 		Species.lastExtinction = 4;

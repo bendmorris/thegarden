@@ -151,13 +151,14 @@ class Species
 	public static function formatRate(rate:Float):String
 	{
 		var rateString:String;
-		if (rate < 0.1)
+		if (Math.abs(rate) < 0.1)
 		{
-			return (Std.int(rate * 60 * 10) / 10) + "/m";
+			//return (Std.int(rate * 60 * 10) / 10) + "/m";
+			return (Std.int(Math.round(rate * 100)) / 100) + "/s";
 		}
 		else
 		{
-			return (Std.int(rate * 10) / 10) + "/s";
+			return (Std.int(Math.round(rate * 10)) / 10) + "/s";
 		}
 	}
 
@@ -191,9 +192,11 @@ class Species
 	public function grow()
 	{
 		var abundance:Float = abundances[name];
-		var limit = this.limit * (1 + 0.01 * richness);
+		var limit = this.limit * (linearGrowth ? 1 : (1 + 0.01 * richness));
+		var time = this.time * (linearGrowth ? 1 : (1 + 0.01 * richness));
 		var desiredGrowth:Float = linearGrowth ? 100 : Math.max(5, abundances[name]);
 		var growth = desiredGrowth;
+
 		if (diets.exists(name))
 		{
 			for (key in diets[name].keys()) diets[name].remove(key);
@@ -210,7 +213,7 @@ class Species
 				for (x in Lambda.fold(options, function(a:String, b:Array<String>) { return b.concat(speciesTypes[a]); }, []))
 				if (abundances.exists(x)) x];
 
-			var needed = desiredGrowth * cost.value / time * 10;
+			var needed = desiredGrowth * cost.value / 60 * 10;
 			var totalAmt:Float = 0;
 			for (sp in typedSpecies)
 			{
@@ -227,7 +230,7 @@ class Species
 			}
 			for (sp in typedSpecies)
 			{
-				var eat = needed * species[sp].value * abundances[sp] / totalAmt / time / (1 + richness / 40);
+				var eat = needed * species[sp].value * abundances[sp] / totalAmt / 60 / (1 + richness / 40);
 				if (!shrinkRates.exists(sp)) shrinkRates[sp] = 0;
 				if (!diets[name].exists(sp)) diets[name][sp] = 0;
 				shrinkRates[sp] += eat;
